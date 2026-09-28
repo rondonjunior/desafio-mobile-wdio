@@ -6,6 +6,7 @@ allure-results/
 allure-report/
 screenshots/
 logs/
+log/
 
 # App baixado automaticamente
 apps/*.apk
