@@ -1,0 +1,23 @@
+[
+    {
+        "cenario": "senhas diferentes",
+        "email": "rondon.qa@teste.com",
+        "senha": "Senha@123",
+        "confirmacao": "Senha@456",
+        "mensagemEsperada": "Please enter the same password"
+    },
+    {
+        "cenario": "e-mail sem formato válido",
+        "email": "rondon.teste",
+        "senha": "Senha@123",
+        "confirmacao": "Senha@123",
+        "mensagemEsperada": "Please enter a valid email address"
+    },
+    {
+        "cenario": "senha com menos de 8 caracteres",
+        "email": "rondon.qa@teste.com",
+        "senha": "123",
+        "confirmacao": "123",
+        "mensagemEsperada": "Please enter at least 8 characters"
+    }
+]
