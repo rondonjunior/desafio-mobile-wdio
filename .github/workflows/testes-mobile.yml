@@ -1,0 +1,119 @@
+name: Testes Mobile
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  android-emulador:
+    name: Android (emulador)
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Baixar o app
+        run: npm run app:download
+
+      - name: Habilitar aceleração do emulador (KVM)
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+
+      - name: Rodar os testes no emulador Android
+        uses: reactivecircus/android-emulator-runner@v2
+        env:
+          ANDROID_DEVICE_NAME: Pixel 7 (emulador CI)
+        with:
+          api-level: 34
+          target: google_apis
+          arch: x86_64
+          profile: pixel_7
+          disable-animations: true
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          script: npx wdio run ./config/wdio.android.conf.js
+
+      - name: Gerar relatório Allure
+        if: always()
+        run: npm run report:generate
+
+      - name: Publicar evidências
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-android-emulador
+          path: |
+            allure-report/
+            screenshots/
+            logs/
+          retention-days: 14
+
+  browserstack:
+    name: Android real (BrowserStack)
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      BROWSERSTACK_USERNAME: ${{ secrets.BROWSERSTACK_USERNAME }}
+      BROWSERSTACK_ACCESS_KEY: ${{ secrets.BROWSERSTACK_ACCESS_KEY }}
+
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Configurar Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+
+      - name: Instalar dependências
+        run: npm ci
+
+      - name: Baixar o app
+        run: npm run app:download
+
+      - name: Rodar os testes no BrowserStack
+        run: npx wdio run ./config/wdio.browserstack.conf.js
+
+      - name: Gerar relatório Allure
+        if: always()
+        run: npm run report:generate
+
+      - name: Publicar evidências
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: evidencias-browserstack
+          path: |
+            allure-report/
+            screenshots/
+            logs/
+          retention-days: 14
