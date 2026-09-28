@@ -7,7 +7,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:android": "wdio run ./config/wdio.android.conf.js",
     "app:download": "node scripts/download-app.js",
-    "pretest:android": "npm run app:download"
+    "pretest:android": "npm run app:download",
+    "report:generate": "allure generate allure-results --clean -o allure-report",
+    "report:open": "allure open allure-report"
   },
   "keywords": [],
   "author": "",

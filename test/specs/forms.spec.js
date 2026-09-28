@@ -15,7 +15,7 @@ describe('Preenchimento de formulários', () => {
 
         await FormsPage.digitarTexto(texto);
 
-        expect(await FormsPage.obterTextoDigitado()).to.equal(texto);
+                expect(await FormsPage.obterTextoDigitado()).to.equal(texto);
     });
 
     it('CT08 - deve ligar e desligar o switch', async () => {
