@@ -2,7 +2,19 @@ import fs from 'node:fs';
 import path from 'node:path';
 
 const VERSAO = 'v1.0.8';
-const ARQUIVO = `android.wdio.native.app.${VERSAO}.apk`;
+const PLATAFORMA = (process.argv[2] || 'android').toLowerCase();
+
+const ARQUIVOS = {
+    android: `android.wdio.native.app.${VERSAO}.apk`,
+    ios: `ios.simulator.wdio.native.app.${VERSAO}.zip`,
+};
+
+const ARQUIVO = ARQUIVOS[PLATAFORMA];
+if (!ARQUIVO) {
+    console.error(`Plataforma invalida: "${PLATAFORMA}". Use android ou ios.`);
+    process.exit(1);
+}
+
 const URL = `https://github.com/webdriverio/native-demo-app/releases/download/${VERSAO}/${ARQUIVO}`;
 const DESTINO = path.resolve('apps', ARQUIVO);
 
@@ -12,7 +24,7 @@ if (fs.existsSync(DESTINO)) {
 }
 
 fs.mkdirSync(path.dirname(DESTINO), { recursive: true });
-console.log(`Baixando o app de: ${URL}`);
+console.log(`Baixando o app (${PLATAFORMA}) de: ${URL}`);
 
 const resposta = await fetch(URL);
 if (!resposta.ok) {

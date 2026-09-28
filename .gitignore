@@ -9,6 +9,7 @@ logs/
 
 # App baixado automaticamente
 apps/*.apk
+apps/*.zip
 
 # Arquivos do sistema e do editor
 .DS_Store
