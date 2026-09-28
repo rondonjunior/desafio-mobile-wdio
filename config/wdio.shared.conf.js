@@ -48,3 +48,15 @@ export const config = {
         await browser.saveScreenshot(path.join('screenshots', `${status}_${nome}.png`));
     },
 };
+
+// Monta os reporters da base acrescentando as informações do ambiente (aba Environment do Allure)
+export function reportersComAmbiente(ambiente) {
+    return config.reporters.map((reporter) =>
+        Array.isArray(reporter) && reporter[0] === 'allure'
+            ? ['allure', {
+                ...reporter[1],
+                reportedEnvironmentVars: { ...ambiente, Node: process.version },
+            }]
+            : reporter
+    );
+}

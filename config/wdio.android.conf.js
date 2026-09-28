@@ -1,5 +1,8 @@
 import path from 'node:path';
-import { config as shared } from './wdio.shared.conf.js';
+import { config as shared, reportersComAmbiente } from './wdio.shared.conf.js';
+
+const DISPOSITIVO = process.env.ANDROID_DEVICE_NAME || 'Pixel_7_API_34';
+const VERSAO_ANDROID = process.env.ANDROID_PLATFORM_VERSION || '14';
 
 export const config = {
     ...shared,
@@ -14,28 +17,19 @@ export const config = {
     capabilities: [{
         platformName: 'Android',
         'appium:automationName': 'UiAutomator2',
-        'appium:deviceName': process.env.ANDROID_DEVICE_NAME || 'Pixel_7_API_34',
-        'appium:platformVersion': process.env.ANDROID_PLATFORM_VERSION || '14',
+        'appium:deviceName': DISPOSITIVO,
+        'appium:platformVersion': VERSAO_ANDROID,
         'appium:app': path.resolve('apps/android.wdio.native.app.v1.0.8.apk'),
         'appium:appWaitActivity': 'com.wdiodemoapp.MainActivity',
         'appium:autoGrantPermissions': true,
         'appium:newCommandTimeout': 240,
     }],
 
-    // Reaproveita o Allure da base e acrescenta as informações do ambiente
-    reporters: shared.reporters.map((reporter) =>
-        Array.isArray(reporter) && reporter[0] === 'allure'
-            ? ['allure', {
-                ...reporter[1],
-                reportedEnvironmentVars: {
-                    Plataforma: 'Android',
-                    Versao_Android: process.env.ANDROID_PLATFORM_VERSION || '14',
-                    Dispositivo: process.env.ANDROID_DEVICE_NAME || 'Pixel_7_API_34',
-                    Automacao: 'Appium 3 + UiAutomator2',
-                    App: 'native-demo-app v1.0.8',
-                    Node: process.version,
-                },
-            }]
-            : reporter
-    ),
+    reporters: reportersComAmbiente({
+        Plataforma: 'Android',
+        Versao_Android: VERSAO_ANDROID,
+        Dispositivo: DISPOSITIVO,
+        Automacao: 'Appium 3 + UiAutomator2',
+        App: 'native-demo-app v1.0.8',
+    }),
 };
