@@ -42,4 +42,9 @@ export default class BasePage {
             return false;
         }
     }
+    async esconderTeclado() {
+        if (await driver.isKeyboardShown()) {
+            await driver.hideKeyboard();
+        }
+    }
 }

@@ -49,11 +49,7 @@ class LoginPage extends BasePage {
     async mensagemDeErroVisivel(texto) {
         return this.estaVisivel(this.mensagemDeErro(texto));
     }
-    async esconderTeclado() {
-        if (await driver.isKeyboardShown()) {
-            await driver.hideKeyboard();
-        }
-    }
+    
 }
 
 export default new LoginPage();
