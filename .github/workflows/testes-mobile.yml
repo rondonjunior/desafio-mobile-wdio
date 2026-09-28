@@ -52,7 +52,10 @@ jobs:
           profile: pixel_7
           disable-animations: true
           emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
-          script: npx wdio run ./config/wdio.android.conf.js
+          script: |
+            adb shell settings put global hide_error_dialogs 1
+            adb shell am broadcast -a android.intent.action.CLOSE_SYSTEM_DIALOGS
+            npx wdio run ./config/wdio.android.conf.js
 
       - name: Gerar relatório Allure
         if: always()
