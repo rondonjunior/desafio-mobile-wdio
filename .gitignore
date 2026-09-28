@@ -1,0 +1,19 @@
+# Dependências (recriadas com npm install)
+node_modules/
+
+# Resultados gerados a cada execução
+allure-results/
+allure-report/
+screenshots/
+logs/
+
+# App baixado automaticamente
+apps/*.apk
+
+# Arquivos do sistema e do editor
+.DS_Store
+Thumbs.db
+.vscode/
+
+# Variáveis sensíveis (BrowserStack)
+.env

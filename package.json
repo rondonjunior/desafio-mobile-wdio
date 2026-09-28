@@ -1,0 +1,28 @@
+{
+  "name": "desafio-mobile-wdio",
+  "version": "1.0.0",
+  "description": "Automacao de testes mobile do native-demo-app com WebdriverIO, Appium, Mocha, Chai e Allure",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:android": "wdio run ./config/wdio.android.conf.js",
+    "app:download": "node scripts/download-app.js",
+    "pretest:android": "npm run app:download"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "devDependencies": {
+    "@wdio/allure-reporter": "^9.32.0",
+    "@wdio/appium-service": "^9.32.0",
+    "@wdio/cli": "^9.32.0",
+    "@wdio/local-runner": "^9.32.0",
+    "@wdio/mocha-framework": "^9.32.0",
+    "@wdio/spec-reporter": "^9.32.0",
+    "allure-commandline": "^2.46.1",
+    "appium": "^3.8.0",
+    "appium-uiautomator2-driver": "^8.7.0",
+    "chai": "^6.2.2"
+  }
+}
