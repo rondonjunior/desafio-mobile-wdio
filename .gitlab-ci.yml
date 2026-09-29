@@ -1,0 +1,46 @@
+# Pipeline para GitLab CI/CD
+# Executa a suíte em dispositivo Android real no BrowserStack a cada commit e merge request.
+# Pré-requisito: cadastrar BROWSERSTACK_USERNAME e BROWSERSTACK_ACCESS_KEY
+# em Settings > CI/CD > Variables (marcadas como Masked).
+
+stages:
+  - test
+
+workflow:
+  rules:
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+    - if: $CI_COMMIT_BRANCH && $CI_OPEN_MERGE_REQUESTS
+      when: never
+    - if: $CI_COMMIT_BRANCH
+
+default:
+  image: node:24-bookworm
+
+variables:
+  npm_config_cache: "$CI_PROJECT_DIR/.npm"
+
+cache:
+  key:
+    files:
+      - package-lock.json
+  paths:
+    - .npm/
+
+testes-android-browserstack:
+  stage: test
+  before_script:
+    - apt-get update && apt-get install -y --no-install-recommends openjdk-17-jre-headless
+    - npm ci
+    - npm run app:download
+  script:
+    - npx wdio run ./config/wdio.browserstack.conf.js
+  after_script:
+    - npm run report:generate
+  artifacts:
+    when: always
+    name: evidencias-browserstack
+    paths:
+      - allure-report/
+      - screenshots/
+      - logs/
+    expire_in: 14 days
